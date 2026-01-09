@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroEarn - Micro Task Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <style>
+        /* Global Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f8fafc; color: #333; }
+        
+        /* Page Container */
+        .page-container { display: none; }
+        .page-active { display: block; }
+        
+        /* Header */
+        header { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer; }
+        .logo-icon { background: linear-gradient(135deg, #10b981, #3b82f6); color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.5rem; }
+        .logo-text { font-size: 1.8rem; font-weight: 700; background: linear-gradient(to right, #10b981, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        
+        nav ul { display: flex; list-style: none; gap: 25px; }
+        nav a { color: #4b5563; text-decoration: none; font-weight: 500; transition: color 0.3s; cursor: pointer; }
+        nav a:hover, .nav-active { color: #10b981; }
+        
+        .user-section { display: flex; align-items: center; gap: 20px; }
+        .balance-box { background: linear-gradient(135deg, #10b981, #3b82f6); color: white; padding: 8px 15px; border-radius: 8px; font-weight: 600; }
+        .btn { padding: 10px 22px; border-radius: 6px; font-weight: 600; text-decoration: none; transition: all 0.3s; cursor: pointer; border: none; }
+        .btn-primary { background: linear-gradient(to right, #10b981, #3b82f6); color: white; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3); }
+        
+        /* Footer */
+        footer { background: #111827; color: white; padding: 60px 0 30px; margin-top: 60px; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; }
+        .copyright { text-align: center; padding-top: 30px; border-top: 1px solid #374151; color: #9ca3af; }
+        
+        /* Home Page Styles */
+        .hero { background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1)); padding: 80px 0; text-align: center; border-radius: 0 0 20px 20px; margin-bottom: 60px; }
+        .hero h1 { font-size: 3rem; color: #111827; margin-bottom: 20px; }
+        .hero-highlight { color: #10b981; }
+        
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 60px; }
+        .dashboard-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; }
+        .dashboard-card h3 { font-size: 1.3rem; margin-bottom: 20px; color: #111827; display: flex; align-items: center; gap: 10px; }
+        .balance-amount { font-size: 2.5rem; font-weight: 700; color: #10b981; margin-bottom: 20px; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 60px; }
+        .stat-card { background: white; padding: 25px; border-radius: 12px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .stat-card i { font-size: 2.5rem; color: #10b981; margin-bottom: 15px; }
+        .stat-number { font-size: 2rem; font-weight: 700; color: #111827; display: block; }
+        
+        .profile-section { background: white; padding: 40px; border-radius: 12px; margin-bottom: 60px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+        .profile-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, #10b981, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: 700; }
+        .profile-info h2 { margin-bottom: 5px; }
+        .profile-info p { color: #6b7280; }
+        
+        .profile-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .detail-item { padding: 15px; background: #f9fafb; border-radius: 8px; }
+        .detail-label { color: #6b7280; font-size: 0.9rem; margin-bottom: 5px; }
+        .detail-value { font-weight: 600; color: #111827; }
+        
+        /* Activation Page Styles */
+        .activation-container { background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1)); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        
+        .activation-logo { text-align: center; margin-bottom: 30px; }
+        .activation-logo-icon { background: linear-gradient(135deg, #10b981, #3b82f6); color: white; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 2rem; margin: 0 auto 15px; }
+        .activation-logo-text { font-size: 2rem; font-weight: 700; background: linear-gradient(to right, #10b981, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        
+        .card { background: white; border-radius: 16px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 500px; width: 100%; }
+        
+        .verification-steps { margin: 30px 0; padding: 25px; background: #f9fafb; border-radius: 12px; }
+        .step { display: flex; align-items: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb; }
+        .step:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .step-number { width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; margin-right: 15px; flex-shrink: 0; }
+        .step-content h3 { margin-bottom: 5px; color: #111827; }
+        .step-content p { color: #6b7280; font-size: 0.9rem; }
+        
+        .deposit-notice { background: #fffbeb; border: 1px solid #fbbf24; border-radius: 8px; padding: 15px; margin-top: 20px; }
+        .deposit-notice h3 { color: #92400e; margin-bottom: 5px; font-size: 1rem; }
+        .deposit-notice p { color: #92400e; font-size: 0.9rem; }
+        
+        .activation-success { display: none; text-align: center; padding: 20px; }
+        .activation-success i { font-size: 4rem; color: #10b981; margin-bottom: 20px; }
+        .activation-success h2 { color: #10b981; margin-bottom: 10px; }
+        
+        /* My Jobs Styles */
+        .page-header { margin: 40px 0 30px; }
+        .page-header h1 { font-size: 2.5rem; color: #111827; margin-bottom: 10px; }
+        .page-header p { color: #6b7280; max-width: 600px; }
+        
+        .job-tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px; }
+        .tab-btn { padding: 12px 24px; background: none; border: none; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.3s; color: #6b7280; }
+        .tab-btn.active { background: #10b981; color: white; }
+        .tab-btn:hover:not(.active) { background: #f3f4f6; }
+        
+        .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; margin-bottom: 60px; }
+        .job-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; transition: all 0.3s; }
+        .job-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .job-header { padding: 20px; border-bottom: 1px solid #e5e7eb; }
+        .job-category { display: inline-block; background: #ecfdf5; color: #10b981; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 10px; }
+        .job-title { font-size: 1.2rem; margin-bottom: 10px; color: #111827; }
+        .job-price { color: #10b981; font-weight: 700; font-size: 1.3rem; margin-bottom: 15px; }
+        .job-description { color: #6b7280; font-size: 0.9rem; margin-bottom: 15px; }
+        .job-footer { padding: 15px 20px; background: #f9fafb; display: flex; justify-content: space-between; align-items: center; }
+        .job-status { padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-completed { background: #d1fae5; color: #065f46; }
+        .status-in-progress { background: #dbeafe; color: #1e40af; }
+        
+        /* Packages Styles */
+        .packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 60px; }
+        .package-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.3s; border: 2px solid #e5e7eb; }
+        .package-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15); border-color: #10b981; }
+        .package-card.popular { border-color: #10b981; position: relative; }
+        .popular-badge { position: absolute; top: 20px; right: 20px; background: #10b981; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .package-header { padding: 30px; text-align: center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1)); }
+        .package-icon { width: 70px; height: 70px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: #10b981; font-size: 1.8rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .package-name { font-size: 1.5rem; margin-bottom: 10px; color: #111827; }
+        .package-price { font-size: 2.5rem; font-weight: 700; color: #10b981; margin-bottom: 5px; }
+        .package-features { padding: 30px; }
+        .feature-list { list-style: none; }
+        .feature-list li { padding: 12px 0; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 10px; }
+        .feature-list li:last-child { border-bottom: none; }
+        .feature-list li i { color: #10b981; }
+        .package-footer { padding: 0 30px 30px; text-align: center; }
+        
+        /* Post Job Styles */
+        .posting-container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 60px; }
+        .form-card { background: white; border-radius: 16px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        
+        .platform-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
+        .platform-option { border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .platform-option:hover { border-color: #10b981; background: #f0fdf4; }
+        .platform-option.selected { border-color: #10b981; background: #ecfdf5; }
+        .platform-icon { font-size: 2rem; margin-bottom: 10px; }
+        .facebook-icon { color: #1877f2; }
+        .youtube-icon { color: #ff0000; }
+        .instagram-icon { color: #e4405f; }
+        .tiktok-icon { color: #000000; }
+        .twitter-icon { color: #1da1f2; }
+        .other-icon { color: #6b7280; }
+        
+        .requirements-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; }
+        .requirement-item { background: #f9fafb; padding: 15px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; }
+        .requirement-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .requirement-name { font-weight: 500; color: #111827; }
+        .requirement-price { font-weight: 600; color: #10b981; }
+        
+        .price-preview { background: linear-gradient(135deg, #10b981, #3b82f6); color: white; padding: 30px; border-radius: 12px; margin-bottom: 25px; }
+        .price-item { display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .price-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .total-price { font-size: 2rem; font-weight: 700; text-align: center; margin-top: 20px; }
+        
+        /* Deposit/Withdraw Styles */
+        .deposit-container, .withdrawal-container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 60px; }
+        
+        .amount-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .amount-option { border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .amount-option:hover { border-color: #10b981; background: #f0fdf4; }
+        .amount-option.selected { border-color: #10b981; background: #ecfdf5; }
+        .amount-value { font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 5px; }
+        
+        .method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .method-option { border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .method-option:hover { border-color: #10b981; }
+        .method-option.selected { border-color: #10b981; background: #ecfdf5; }
+        .method-icon { font-size: 2rem; margin-bottom: 10px; }
+        .bkash-icon { color: #e2136e; }
+        .nagad-icon { color: #f8a61c; }
+        .rocket-icon { color: #5d2d91; }
+        .bank-icon { color: #10b981; }
+        .card-icon { color: #3b82f6; }
+        .crypto-icon { color: #f59e0b; }
+        
+        .deposit-summary, .withdrawal-summary { background: linear-gradient(135deg, #10b981, #3b82f6); color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; }
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .summary-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .summary-total { font-size: 1.8rem; font-weight: 700; text-align: center; margin-top: 20px; }
+        
+        /* Referral Styles */
+        .referral-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; margin-bottom: 60px; }
+        .stat-icon { width: 70px; height: 70px; background: linear-gradient(135deg, #10b981, #3b82f6); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 1.8rem; }
+        
+        .referral-program { background: white; border-radius: 16px; padding: 50px; margin-bottom: 60px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center; }
+        .bonus-badge { display: inline-block; background: linear-gradient(135deg, #10b981, #3b82f6); color: white; padding: 10px 30px; border-radius: 30px; font-size: 2.5rem; font-weight: 700; margin-bottom: 30px; }
+        
+        .referral-link-container { background: #f9fafb; padding: 40px; border-radius: 12px; margin-bottom: 40px; }
+        .referral-link { display: flex; gap: 15px; margin-bottom: 25px; }
+        
+        .share-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .share-btn { display: flex; align-items: center; gap: 10px; padding: 12px 25px; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s; border: none; }
+        .facebook-share { background: #1877f2; }
+        .whatsapp-share { background: #25d366; }
+        .telegram-share { background: #0088cc; }
+        .twitter-share { background: #1da1f2; }
+        .email-share { background: #6b7280; }
+        
+        /* Form Elements */
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: #4b5563; }
+        input, select, textarea { width: 100%; padding: 14px; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 1rem; transition: all 0.3s; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+        textarea { min-height: 120px; resize: vertical; }
+        
+        /* Modals */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 40px; border-radius: 16px; width: 90%; max-width: 600px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .posting-container, .deposit-container, .withdrawal-container { grid-template-columns: 1fr; }
+            .platform-options { grid-template-columns: repeat(2, 1fr); }
+            .method-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; gap: 20px; }
+            nav ul { flex-wrap: wrap; justify-content: center; }
+            .hero h1 { font-size: 2rem; }
+            .amount-grid, .requirements-grid { grid-template-columns: 1fr; }
+            .platform-options, .method-grid { grid-template-columns: 1fr; }
+            .job-tabs { flex-wrap: wrap; }
+            .jobs-grid, .packages-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Activation Page (Shows first) -->
+    <div id="activation-page" class="page-container page-active">
+        <div class="activation-container">
+            <div class="container">
+                <div class="activation-logo">
+                    <div class="activation-logo-icon">ME</div>
+                    <div class="activation-logo-text">MicroEarn</div>
+                </div>
+                
+                <div class="card">
+                    <h1>Activate Your Account</h1>
+                    <p class="subtitle">Complete your registration and start earning</p>
+                    
+                    <div id="registrationForm">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" placeholder="Enter your full name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" placeholder="Enter your phone number" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <select id="country" required>
+                                <option value="">Select Country</option>
+                                <option value="BD">Bangladesh</option>
+                                <option value="US">United States</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="CA">Canada</option>
+                                <option value="AU">Australia</option>
+                                <option value="IN">India</option>
+                                <option value="PK">Pakistan</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" placeholder="Create a password" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                        </div>
+                        
+                        <div class="verification-steps">
+                            <h3 style="margin-bottom: 20px; color: #111827;">Account Verification Steps</h3>
+                            
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h3>Complete Registration</h3>
+                                    <p>Fill out the registration form with valid information</p>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h3>Make Initial Deposit</h3>
+                                    <p>Deposit minimum $100 to activate your account</p>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h3>Start Earning</h3>
+                                    <p>Browse available jobs and start completing tasks</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="deposit-notice">
+                            <h3><i class="fas fa-info-circle"></i> Important Notice</h3>
+                            <p>Your account will be fully activated after you make your first deposit of minimum $100. This deposit will be available in your balance for completing jobs.</p>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 20px;">
+                            <input type="checkbox" id="terms" required>
+                            <label for="terms" style="display: inline; font-size: 0.9rem;">
+                                I agree to the <a href="#" style="color: #10b981;">Terms of Service</a> and <a href="#" style="color: #10b981;">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="activateAccount()">Activate Account</button>
+                    </div>
+                    
+                    <div id="activationSuccess" class="activation-success">
+                        <i class="fas fa-check-circle"></i>
+                        <h2>Account Activated Successfully!</h2>
+                        <p>Your account has been created. Please proceed to deposit minimum $100 to start earning.</p>
+                        <button class="btn btn-primary" onclick="goToDepositFromActivation()" style="margin-top: 20px;">Proceed to Deposit</button>
+                    </div>
+                    
+                    <div class="login-link">
+                        Already have an account? <a href="#" onclick="showPage('home')">Log In</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Pages (Hidden until activation) -->
+    <div id="main-app" class="page-container">
+        <!-- Header -->
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo" onclick="showPage('home')">
+                        <div class="logo-icon">ME</div>
+                        <div class="logo-text">MicroEarn</div>
+                    </div>
+                    
+                    <nav>
+                        <ul>
+                            <li><a href="#" onclick="showPage('home')" class="nav-active">Home</a></li>
+                            <li><a href="#" onclick="showPage('myjobs')">My Jobs</a></li>
+                            <li><a href="#" onclick="showPage('packages')">Packages</a></li>
+                            <li><a href="#" onclick="showPage('postjob')">Post Job</a></li>
+                            <li><a href="#" onclick="showPage('deposit')">Deposit</a></li>
+                            <li><a href="#" onclick="showPage('withdraw')">Withdraw</a></li>
+                            <li><a href="#" onclick="showPage('referral')">Referral</a></li>
+                        </ul>
+                    </nav>
+                    
+                    <div class="user-section">
+                        <div class="balance-box">
+                            <i class="fas fa-wallet"></i> Balance: $<span id="userBalance">0.00</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="showPage('home')">My Account</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Home Page -->
+        <div id="home-page" class="page-container page-active">
+            <main class="container">
+                <section class="hero">
+                    <h1>Earn Money with <span class="hero-highlight">Micro Tasks</span></h1>
+                    <p style="max-width: 600px; margin: 0 auto 30px; color: #6b7280; font-size: 1.1rem;">
+                        Complete simple tasks and earn money. Start with minimum $100 deposit.
+                    </p>
+                    <button class="btn btn-primary" onclick="showPage('deposit')" style="padding: 14px 30px;">Start Earning Now</button>
+                </section>
+
+                <section class="dashboard">
+                    <h2 style="font-size: 2rem; margin-bottom: 30px; color: #111827;">Dashboard Overview</h2>
+                    
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <h3><i class="fas fa-wallet"></i> Account Balance</h3>
+                            <div class="balance-amount" id="mainBalance">$0.00</div>
+                            <p>Available for withdrawal or use on jobs</p>
+                            <div style="display: flex; gap: 15px; margin-top: 25px;">
+                                <button class="btn btn-primary" onclick="showPage('deposit')">Deposit</button>
+                                <button class="btn" onclick="showPage('withdraw')" style="background: #f3f4f6; color: #111827;">Withdraw</button>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <h3><i class="fas fa-tasks"></i> Job Statistics</h3>
+                            <div style="margin-top: 20px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e5e7eb;">
+                                    <span>Jobs Completed:</span>
+                                    <span style="font-weight: 600; color: #10b981;" id="jobsCompleted">0</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e5e7eb;">
+                                    <span>Total Earned:</span>
+                                    <span style="font-weight: 600; color: #10b981;" id="totalEarned">$0.00</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                    <span>Active Jobs:</span>
+                                    <span style="font-weight: 600; color: #f59e0b;" id="activeJobs">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <h3><i class="fas fa-user-friends"></i> Referral Program</h3>
+                            <p>Invite friends and earn 40 TK for each successful referral.</p>
+                            <div style="margin: 25px 0; padding: 15px; background: #f0fdf4; border-radius: 8px;">
+                                <div style="font-size: 1.8rem; font-weight: 700; color: #10b981;">40 TK</div>
+                                <div style="color: #6b7280; font-size: 0.9rem;">Per successful referral</div>
+                            </div>
+                            <button class="btn btn-primary" onclick="showPage('referral')" style="width: 100%;">View Referral Details</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="quick-stats">
+                    <h2 style="font-size: 2rem; margin-bottom: 30px; color: #111827;">Quick Statistics</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-briefcase"></i>
+                            <span class="stat-number" id="availableJobs">1,247</span>
+                            <div>Available Jobs</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <i class="fas fa-users"></i>
+                            <span class="stat-number" id="activeUsers">18,942</span>
+                            <div>Active Users</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span class="stat-number" id="totalPaid">$587K</span>
+                            <div>Total Paid</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <i class="fas fa-star"></i>
+                            <span class="stat-number" id="successRate">98%</span>
+                            <div>Success Rate</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="profile-section">
+                    <div class="profile-header">
+                        <div class="profile-avatar" id="userAvatar">JD</div>
+                        <div class="profile-info">
+                            <h2 id="userName">John Doe</h2>
+                            <p id="userEmail">john.doe@example.com</p>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <span style="background: #10b981; color: white; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem;">Active</span>
+                                <span style="background: #f3f4f6; color: #6b7280; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem;">Member</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Account ID</div>
+                            <div class="detail-value" id="accountId">ME-2023-001</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Member Since</div>
+                            <div class="detail-value" id="joinDate">January 15, 2023</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Verification Status</div>
+                            <div class="detail-value" style="color: #ef4444;">Pending</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Last Activity</div>
+                            <div class="detail-value" id="lastActivity">Today, 10:30 AM</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px; display: flex; gap: 15px;">
+                        <button class="btn btn-primary">Edit Profile</button>
+                        <button class="btn" onclick="showPage('myjobs')" style="background: #f3f4f6; color: #111827;">View My Jobs</button>
+                        <button class="btn" onclick="showPage('packages')" style="background: #f3f4f6; color: #111827;">Buy Package</button>
+                    </div>
+                </section>
+            </main>
+
+            <!-- Footer -->
+            <footer>
+                <div class="container">
+                    <div class="footer-content">
+                        <div>
+                            <div class="logo" onclick="showPage('home')" style="display: inline-block; margin-bottom: 20px; cursor: pointer;">
+                                <div class="logo-icon">ME</div>
+                                <div class="logo-text">MicroEarn</div>
+                            </div>
+                            <p style="color: #d1d5db; margin-bottom: 20px;">Earn money by completing micro tasks online.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 style="color: #10b981; margin-bottom: 20px;">Quick Links</h3>
+                            <ul style="list-style: none;">
+                                <li><a href="#" onclick="showPage('home')" style="color: #d1d5db; text-decoration: none; cursor: pointer;">Home</a></li>
+                                <li><a href="#" onclick="showPage('myjobs')" style="color: #d1d5db; text-decoration: none; cursor: pointer;">My Jobs</a></li>
+                                <li><a href="#" onclick="showPage('packages')" style="color: #d1d5db; text-decoration: none; cursor: pointer;">Packages</a></li>
+                                <li><a href="#" onclick="showPage('deposit')" style="color: #d1d5db; text-decoration: none; cursor: pointer;">Deposit</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 style="color: #10b981; margin-bottom: 20px;">Support</h3>
+                            <ul style="list-style: none;">
+                                <li><a href="#" style="color: #d1d5db; text-decoration: none;">Help Center</a></li>
+                                <li><a href="#" style="color: #d1d5db; text-decoration: none;">Contact Us</a></li>
+                                <li><a href="#" style="color: #d1d5db; text-decoration: none;">Terms of Service</a></li>
+                                <li><a href="#" style="color: #d1d5db; text-decoration: none;">Privacy Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="copyright">
+                        <p>&copy; 2023 MicroEarn. All rights reserved.</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- My Jobs Page -->
+        <div id="myjobs-page" class="page-container">
+            <main class="container">
+                <div class="page-header">
+                    <h1>My Jobs</h1>
+                    <p>Track and manage your micro tasks. Complete jobs to earn money.</p>
+                </div>
+                
+                <div class="job-tabs">
+                    <button class="tab-btn active" onclick="filterJobs('all')">All Jobs</button>
+                    <button class="tab-btn" onclick="filterJobs('youtube')">YouTube</button>
+                    <button class="tab-btn" onclick="filterJobs('facebook')">Facebook</button>
+                    <button class="tab-btn" onclick="filterJobs('instagram')">Instagram</button>
+                    <button class="tab-btn" onclick="filterJobs('tiktok')">TikTok</button>
+                    <button class="tab-btn" onclick="filterJobs('completed')">Completed</button>
+                </div>
+                
+                <h2 style="margin-bottom: 20px; color: #111827;">Active Jobs</h2>
+                <div class="jobs-grid" id="activeJobsGrid">
+                    <div class="job-card" data-category="youtube">
+                        <div class="job-header">
+                            <span class="job-category">YouTube</span>
+                            <h3 class="job-title">Watch YouTube Video</h3>
+                            <div class="job-price">$0.15</div>
+                            <p class="job-description">Watch a YouTube video for at least 3 minutes, like it, and leave a comment.</p>
+                            <div style="font-size: 0.8rem; color: #6b7280; margin-top: 10px;">
+                                <i class="far fa-clock"></i> Time: 5 minutes
+                            </div>
+                        </div>
+                        <div class="job-footer">
+                            <span class="job-status status-in-progress">In Progress</span>
+                            <button class="btn btn-primary" onclick="openJobDetails('youtube-watch')">Continue Job</button>
+                        </div>
+                    </div>
+                    
+                    <div class="job-card" data-category="facebook">
+                        <div class="job-header">
+                            <span class="job-category">Facebook</span>
+                            <h3 class="job-title">Like Facebook Page</h3>
+                            <div class="job-price">$0.10</div>
+                            <p class="job-description">Like a Facebook page and stay liked for 7 days.</p>
+                            <div style="font-size: 0.8rem; color: #6b7280; margin-top: 10px;">
+                                <i class="far fa-clock"></i> Time: 2 minutes
+                            </div>
+                        </div>
+                        <div class="job-footer">
+                            <span class="job-status status-pending">Pending Review</span>
+                            <button class="btn" style="background: none; color: #10b981; border: 2px solid #10b981;" onclick="openJobDetails('fb-like')">View Details</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2 style="margin-bottom: 20px; color: #111827; margin-top: 60px;">Available Jobs</h2>
+                <div class="jobs-grid" id="availableJobsGrid">
+                    <div class="job-card" data-category="youtube">
+                        <div class="job-header">
+                            <span class="job-category">YouTube</span>
+                            <h3 class="job-title">Subscribe to Channel</h3>
+                            <div class="job-price">$0.25</div>
+                            <p class="job-description">Subscribe to a YouTube channel and turn on notifications.</p>
+                            <div style="font-size: 0.8rem; color: #6b7280; margin-top: 10px;">
+                                <i class="far fa-clock"></i> Time: 2 minutes
+                            </div>
+                        </div>
+                        <div class="job-footer">
+                            <span style="color: #6b7280; font-size: 0.9rem;">Available</span>
+                            <button class="btn btn-primary" onclick="startNewJob('youtube-subscribe')">Start Job</button>
+                        </div>
+                    </div>
+                    
+                    <div class="job-card" data-category="tiktok">
+                        <div class="job-header">
+                            <span class="job-category">TikTok</span>
+                            <h3 class="job-title">Follow TikTok Account</h3>
+                            <div class="job-price">$0.35</div>
+                            <p class="job-description">Follow a TikTok account and like 5 videos.</p>
+                            <div style="font-size: 0.8rem; color: #6b7280; margin-top: 10px;">
+                                <i class="far fa-clock"></i> Time: 5 minutes
+                            </div>
+                        </div>
+                        <div class="job-footer">
+                            <span style="color: #6b7280; font-size: 0.9rem;">Available</span>
+                            <button class="btn btn-primary" onclick="startNewJob('tiktok-follow')">Start Job</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Packages Page -->
+        <div id="packages-page" class="page-container">
+            <main class="container">
+                <div class="page-header">
+                    <h1>Choose Your Package</h1>
+                    <p>Select a package that fits your earning goals. Higher packages offer better rates and bonuses.</p>
+                </div>
+                
+                <div class="packages-grid">
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-icon">
+                                <i class="fas fa-seedling"></i>
+                            </div>
+                            <h3 class="package-name">Starter</h3>
+                            <div class="package-price">$100</div>
+                            <div class="package-duration">One-time payment</div>
+                        </div>
+                        
+                        <div class="package-features">
+                            <ul class="feature-list">
+                                <li><i class="fas fa-check"></i> Access to basic jobs</li>
+                                <li><i class="fas fa-check"></i> $100 working balance</li>
+                                <li><i class="fas fa-check"></i> Standard earning rates</li>
+                                <li><i class="fas fa-check"></i> Email support</li>
+                                <li><i class="fas fa-times"></i> No bonus</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="package-footer">
+                            <button class="btn btn-primary" onclick="selectPackage('starter')">Select Starter</button>
+                        </div>
+                    </div>
+                    
+                    <div class="package-card popular">
+                        <div class="popular-badge">MOST POPULAR</div>
+                        <div class="package-header">
+                            <div class="package-icon">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <h3 class="package-name">Premium</h3>
+                            <div class="package-price">$500</div>
+                            <div class="package-duration">One-time payment</div>
+                        </div>
+                        
+                        <div class="package-features">
+                            <ul class="feature-list">
+                                <li><i class="fas fa-check"></i> Access to all jobs</li>
+                                <li><i class="fas fa-check"></i> $500 working balance</li>
+                                <li><i class="fas fa-check"></i> 10% higher earning rates</li>
+                                <li><i class="fas fa-check"></i> 24/7 priority support</li>
+                                <li><i class="fas fa-check"></i> 10% deposit bonus</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="package-footer">
+                            <button class="btn btn-primary" onclick="selectPackage('premium')">Select Premium</button>
+                        </div>
+                    </div>
+                    
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-icon">
+                                <i class="fas fa-gem"></i>
+                            </div>
+                            <h3 class="package-name">Advanced</h3>
+                            <div class="package-price">$1000</div>
+                            <div class="package-duration">One-time payment</div>
+                        </div>
+                        
+                        <div class="package-features">
+                            <ul class="feature-list">
+                                <li><i class="fas fa-check"></i> Access to all jobs + VIP</li>
+                                <li><i class="fas fa-check"></i> $1000 working balance</li>
+                                <li><i class="fas fa-check"></i> 15% higher earning rates</li>
+                                <li><i class="fas fa-check"></i> Dedicated account manager</li>
+                                <li><i class="fas fa-check"></i> 15% deposit bonus</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="package-footer">
+                            <button class="btn btn-primary" onclick="selectPackage('advanced')">Select Advanced</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Post Job Page -->
+        <div id="postjob-page" class="page-container">
+            <main class="container">
+                <div class="page-header">
+                    <h1>Post a New Job</h1>
+                    <p>Create micro tasks for our community to complete. Choose platform, set requirements, and budget.</p>
+                </div>
+                
+                <div class="posting-container">
+                    <div class="form-card">
+                        <h2>Job Details</h2>
+                        
+                        <div class="form-group">
+                            <label for="jobTitle">Job Title</label>
+                            <input type="text" id="jobTitle" placeholder="e.g., Like Facebook Page, Watch YouTube Video">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="jobDescription">Job Description</label>
+                            <textarea id="jobDescription" placeholder="Describe the task in detail."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Select Platform</label>
+                            <div class="platform-options">
+                                <div class="platform-option" onclick="selectPlatform('facebook')">
+                                    <div class="platform-icon facebook-icon">
+                                        <i class="fab fa-facebook"></i>
+                                    </div>
+                                    <div>Facebook</div>
+                                </div>
+                                
+                                <div class="platform-option" onclick="selectPlatform('youtube')">
+                                    <div class="platform-icon youtube-icon">
+                                        <i class="fab fa-youtube"></i>
+                                    </div>
+                                    <div>YouTube</div>
+                                </div>
+                                
+                                <div class="platform-option" onclick="selectPlatform('instagram')">
+                                    <div class="platform-icon instagram-icon">
+                                        <i class="fab fa-instagram"></i>
+                                    </div>
+                                    <div>Instagram</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-card">
+                        <h2>Pricing & Requirements</h2>
+                        
+                        <div class="form-group">
+                            <label for="pricePerWorker">Price per Worker ($)</label>
+                            <input type="number" id="pricePerWorker" min="0.10" max="100" step="0.10" value="0.50">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="workerCount">Number of Workers Needed</label>
+                            <input type="number" id="workerCount" min="1" max="1000" value="10">
+                        </div>
+                        
+                        <div class="price-preview">
+                            <h3>Cost Summary</h3>
+                            <div class="price-item">
+                                <span>Price per Worker:</span>
+                                <span id="previewPricePerWorker">$0.50</span>
+                            </div>
+                            <div class="price-item">
+                                <span>Number of Workers:</span>
+                                <span id="previewWorkerCount">10</span>
+                            </div>
+                            <div class="total-price" id="previewTotalCost">$5.50</div>
+                        </div>
+                        
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="previewJob()">Preview Job</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Deposit Page -->
+        <div id="deposit-page" class="page-container">
+            <main class="container">
+                <div class="page-header">
+                    <h1>Deposit Funds</h1>
+                    <p>Add funds to your account to start earning. Minimum deposit: $100</p>
+                </div>
+                
+                <div class="deposit-container">
+                    <div class="form-card">
+                        <h2>Make a Deposit</h2>
+                        
+                        <div class="form-group">
+                            <label>Select Deposit Amount</label>
+                            <div class="amount-grid">
+                                <div class="amount-option selected" onclick="selectAmount(100)">
+                                    <div class="amount-value">$100</div>
+                                    <div class="amount-bonus">Minimum</div>
+                                </div>
+                                
+                                <div class="amount-option" onclick="selectAmount(300)">
+                                    <div class="amount-value">$300</div>
+                                    <div class="amount-bonus">+ $15 bonus</div>
+                                </div>
+                                
+                                <div class="amount-option" onclick="selectAmount(500)">
+                                    <div class="amount-value">$500</div>
+                                    <div class="amount-bonus">+ $50 bonus</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Select Payment Method</label>
+                            <div class="method-grid">
+                                <div class="method-option selected" onclick="selectMethod('bkash')">
+                                    <div class="method-icon bkash-icon">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <div>bKash</div>
+                                </div>
+                                
+                                <div class="method-option" onclick="selectMethod('nagad')">
+                                    <div class="method-icon nagad-icon">
+                                        <i class="fas fa-wallet"></i>
+                                    </div>
+                                    <div>Nagad</div>
+                                </div>
+                                
+                                <div class="method-option" onclick="selectMethod('bank')">
+                                    <div class="method-icon bank-icon">
+                                        <i class="fas fa-university"></i>
+                                    </div>
+                                    <div>Bank</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="transactionId">Transaction ID</label>
+                            <input type="text" id="transactionId" placeholder="Enter transaction ID">
+                        </div>
+                        
+                        <button class="btn btn-primary" style="width: 100%;" onclick="submitDeposit()">Confirm Deposit</button>
+                    </div>
+                    
+                    <div>
+                        <div class="deposit-summary">
+                            <h3>Deposit Summary</h3>
+                            
+                            <div class="summary-item">
+                                <span>Deposit Amount:</span>
+                                <span id="summaryAmount">$100.00</span>
+                            </div>
+                            
+                            <div class="summary-item">
+                                <span>Bonus (0%):</span>
+                                <span id="summaryBonus">$0.00</span>
+                            </div>
+                            
+                            <div class="summary-total" id="summaryTotal">Total: $100.00</div>
+                        </div>
+                        
+                        <div class="form-card">
+                            <h2>Payment Instructions</h2>
+                            <div id="paymentInstructions">
+                                <p>Send money to: <strong>+880 1712 345678</strong></p>
+                                <p>Include transaction ID in the reference</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Withdraw Page -->
+        <div id="withdraw-page" class="page-container">
+            <main class="container">
+                <div class="page-header">
+                    <h1>Withdraw Earnings</h1>
+                    <p>Withdraw your earnings to your preferred payment method. Minimum withdrawal: $300</p>
+                </div>
+                
+                <div class="withdrawal-container">
+                    <div class="form-card">
+                        <h2>Request Withdrawal</h2>
+                        
+                        <div style="background: #f0fdf4; padding: 20px; border-radius: 12px; margin-bottom: 30px; text-align: center;">
+                            <div style="font-size: 0.9rem; color: #065f46; margin-bottom: 5px;">Available for Withdrawal</div>
+                            <div style="font-size: 2.5rem; font-weight: 700; color: #10b981;" id="availableBalance">$0.00</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Withdrawal Amount</label>
+                            <div class="amount-grid">
+                                <div class="amount-option selected" onclick="selectWithdrawAmount(300)">
+                                    <div class="amount-value">$300</div>
+                                    <div class="amount-fee">Minimum</div>
+                                </div>
+                                
+                                <div class="amount-option" onclick="selectWithdrawAmount(500)">
+                                    <div class="amount-value">$500</div>
+                                    <div class="amount-fee">Standard</div>
+                                </div>
+                                
+                                <div class="amount-option" onclick="selectWithdrawAmount(1000)">
+                                    <div class="amount-value">$1000</div>
+                                    <div class="amount-fee">Recommended</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Withdrawal Method</label>
+                            <div class="method-grid">
+                                <div class="method-option selected" onclick="selectWithdrawMethod('bkash')">
+                                    <div class="method-icon bkash-icon">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <div>bKash</div>
+                                </div>
+                                
+                                <div class="method-option" onclick="selectWithdrawMethod('nagad')">
+                                    <div class="method-icon nagad-icon">
+                                        <i class="fas fa-wallet"></i>
+                                    </div>
+                                    <div>Nagad</div>
+                                </div>
+                                
+                                <div class="method-option" onclick="selectWithdrawMethod('bank')">
+                                    <div class="method-icon bank-icon">
+                                        <i class="fas fa-university"></i>
+                                    </div>
+                                    <div>Bank</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="withdrawAccount">Account Number</label>
+                            <input type="text" id="withdrawAccount" placeholder="Your bKash/Nagad number">
+                        </div>
+                        
+                        <button class="btn btn-primary" style="width: 100%;" onclick="submitWithdrawal()">Submit Withdrawal</button>
+                    </div>
+                    
+                    <div>
+                        <div class="withdrawal-summary">
+                            <h3>Withdrawal Summary</h3>
+                            
+                            <div class="summary-item">
+                                <span>Withdrawal Amount:</span>
+                                <span id="withdrawAmount">$300.00</span>
+                            </div>
+                            
+                            <div class="summary-item">
+                                <span>Processing Fee (1.5%):</span>
+                                <span id="withdrawFee">$4.50</span>
+                            </div>
+                            
+                            <div class="summary-total" id="withdrawTotal">You Receive: $295.50</div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Referral Page -->
+        <div id="referral-page" class="page-container">
+            <main class="container">
+                <div class="page-header">
+                    <h1>Referral Program</h1>
+                    <p>Invite friends and earn 40 TK for each successful referral. Grow your earnings by sharing.</p>
+                </div>
+                
+                <div class="referral-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <span class="stat-number" id="totalReferrals">0</span>
+                        <span class="stat-label">Total Referrals</span>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <span class="stat-number" id="referralEarned">$0.00</span>
+                        <span class="stat-label">Total Earned</span>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <span class="stat-number" id="pendingBonus">$0.00</span>
+                        <span class="stat-label">Pending Bonus</span>
+                    </div>
+                </div>
+                
+                <div class="referral-program">
+                    <div class="bonus-badge">40 TK</div>
+                    <h2 style="margin-bottom: 20px; color: #111827;">Earn 40 TK Per Referral</h2>
+                    <p class="program-description">
+                        Invite your friends to join MicroEarn and earn 40 TK for each successful referral.
+                    </p>
+                    
+                    <div class="referral-link-container">
+                        <h3 style="margin-bottom: 20px; color: #111827;">Your Referral Link</h3>
+                        <div class="referral-link">
+                            <input type="text" id="referralLinkInput" value="https://microearn.com/ref=ME2023" readonly>
+                            <button class="btn btn-primary" onclick="copyReferralLink()">
+                                <i class="fas fa-copy"></i> Copy Link
+                            </button>
+                        </div>
+                        
+                        <div class="share-buttons">
+                            <button class="share-btn facebook-share" onclick="shareOnFacebook()">
+                                <i class="fab fa-facebook-f"></i> Facebook
+                            </button>
+                            <button class="share-btn whatsapp-share" onclick="shareOnWhatsApp()">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                            <button class="share-btn telegram-share" onclick="shareOnTelegram()">
+                                <i class="fab fa-telegram"></i> Telegram
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Job Details Modal -->
+    <div id="jobModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            <div id="modalContent">
+                <h2>Job Details</h2>
+                <p>Job details will appear here.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Package Purchase Modal -->
+    <div id="packageModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalPackageName">Package Purchase</h2>
+            <div style="margin: 20px 0;">
+                <p>Package Price: <span id="modalPackagePrice">$0</span></p>
+                <p>Bonus: <span id="modalPackageBonus">$0</span></p>
+                <p>Total Added: <span id="modalTotalBalance">$0</span></p>
+            </div>
+            <button class="btn btn-primary" onclick="confirmPackagePurchase()">Confirm Purchase</button>
+            <button class="btn" style="background: #f3f4f6; color: #111827; margin-left: 10px;" onclick="closePackageModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // Global User Data
+        let userData = {
+            balance: 0.00,
+            jobsCompleted: 0,
+            totalEarned: 0.00,
+            activeJobs: 0,
+            name: "John Doe",
+            email: "john.doe@example.com",
+            accountId: "ME-2023-001",
+            joinDate: "January 15, 2023",
+            lastActivity: "Today, 10:30 AM",
+            referrals: [],
+            deposits: [],
+            withdrawals: []
+        };
+
+        // Page Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-container').forEach(page => {
+                page.classList.remove('page-active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId + '-page').classList.add('page-active');
+            
+            // Update navigation active state
+            document.querySelectorAll('nav a').forEach(link => {
+                link.classList.remove('nav-active');
+            });
+            
+            // Set active nav link (except for deposit/withdraw from activation)
+            if (pageId !== 'deposit' && pageId !== 'withdraw') {
+                const activeLink = document.querySelector(`nav a[onclick*="${pageId}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('nav-active');
+                }
+            }
+            
+            // Update user data on page change
+            updateUserData();
+        }
+
+        // Check if user is activated
+        function checkUserActivation() {
+            const savedData = localStorage.getItem('microEarnUserData');
+            if (savedData) {
+                userData = JSON.parse(savedData);
+                // Hide activation page, show main app
+                document.getElementById('activation-page').classList.remove('page-active');
+                document.getElementById('main-app').classList.add('page-active');
+                document.getElementById('home-page').classList.add('page-active');
+                updateUserData();
+            }
+        }
+
+        // Activation Functions
+        function activateAccount() {
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const country = document.getElementById('country').value;
+            const terms = document.getElementById('terms').checked;
+            
+            // Validation
+            if (!fullName || !email || !phone || !password || !confirmPassword || !country) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            if (!terms) {
+                alert('You must agree to the Terms of Service and Privacy Policy');
+                return;
+            }
+            
+            // Create user data
+            userData = {
+                name: fullName,
+                email: email,
+                phone: phone,
+                country: country,
+                balance: 0.00,
+                jobsCompleted: 0,
+                totalEarned: 0.00,
+                activeJobs: 0,
+                accountId: 'ME-' + Date.now().toString().slice(-6),
+                joinDate: new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                }),
+                lastActivity: 'Just now',
+                referrals: [],
+                deposits: [],
+                withdrawals: []
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('microEarnUserData', JSON.stringify(userData));
+            
+            // Show success message
+            document.getElementById('registrationForm').style.display = 'none';
+            document.getElementById('activationSuccess').style.display = 'block';
+        }
+
+        function goToDepositFromActivation() {
+            // Hide activation page, show main app and deposit page
+            document.getElementById('activation-page').classList.remove('page-active');
+            document.getElementById('main-app').classList.add('page-active');
+            document.getElementById('deposit-page').classList.add('page-active');
+            updateUserData();
+        }
+
+        // Update user data display
+        function updateUserData() {
+            // Load from localStorage
+            const savedData = localStorage.getItem('microEarnUserData');
+            if (savedData) {
+                userData = JSON.parse(savedData);
+            }
+            
+            // Update balance elements
+            document.getElementById('userBalance').textContent = userData.balance.toFixed(2);
+            document.getElementById('mainBalance').textContent = '$' + userData.balance.toFixed(2);
+            document.getElementById('availableBalance').textContent = '$' + userData.balance.toFixed(2);
+            
+            // Update job stats
+            document.getElementById('jobsCompleted').textContent = userData.jobsCompleted;
+            document.getElementById('totalEarned').textContent = '$' + userData.totalEarned.toFixed(2);
+            document.getElementById('activeJobs').textContent = userData.activeJobs;
+            
+            // Update profile
+            document.getElementById('userName').textContent = userData.name;
+            document.getElementById('userEmail').textContent = userData.email;
+            document.getElementById('accountId').textContent = userData.accountId;
+            document.getElementById('joinDate').textContent = userData.joinDate;
+            document.getElementById('lastActivity').textContent = userData.lastActivity;
+            
+            // Update avatar initials
+            const names = userData.name.split(' ');
+            const initials = names[0].charAt(0) + (names[1] ? names[1].charAt(0) : names[0].charAt(1));
+            document.getElementById('userAvatar').textContent = initials;
+            
+            // Update referral stats
+            document.getElementById('totalReferrals').textContent = userData.referrals ? userData.referrals.length : 0;
+            const totalEarned = userData.referrals ? userData.referrals.reduce((sum, ref) => sum + (ref.bonus || 0), 0) : 0;
+            document.getElementById('referralEarned').textContent = '$' + totalEarned.toFixed(2);
+        }
+
+        // My Jobs Functions
+        function filterJobs(category) {
+            // Update active tab
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // In a real app, this would filter jobs
+            alert('Filtering jobs by: ' + category);
+        }
+
+        function openJobDetails(jobType) {
+            document.getElementById('modalContent').innerHTML = `
+                <h2>Job Details</h2>
+                <p>Job Type: ${jobType}</p>
+                <p>Reward: $0.15 - $0.50</p>
+                <p>Complete the task and submit proof to earn.</p>
+                <button class="btn btn-primary" onclick="completeJob()">Complete Job</button>
+            `;
+            document.getElementById('jobModal').style.display = 'flex';
+        }
+
+        function startNewJob(jobType) {
+            if (userData.balance < 0.10) {
+                alert('You need at least $0.10 in your balance to start jobs. Please deposit first.');
+                return;
+            }
+            
+            openJobDetails(jobType);
+        }
+
+        function completeJob() {
+            // Update user stats
+            userData.balance += 0.15;
+            userData.jobsCompleted += 1;
+            userData.totalEarned += 0.15;
+            
+            // Save to localStorage
+            localStorage.setItem('microEarnUserData', JSON.stringify(userData));
+            
+            // Update display
+            updateUserData();
+            
+            // Close modal
+            closeModal();
+            
+            alert('Job completed! $0.15 has been added to your balance.');
+        }
+
+        // Package Functions
+        const packages = {
+            starter: { name: 'Starter Package', price: 100, bonus: 0, total: 100 },
+            premium: { name: 'Premium Package', price: 500, bonus: 50, total: 550 },
+            advanced: { name: 'Advanced Package', price: 1000, bonus: 150, total: 1150 }
+        };
+
+        function selectPackage(packageId) {
+            const pkg = packages[packageId];
+            
+            document.getElementById('modalPackageName').textContent = pkg.name;
+            document.getElementById('modalPackagePrice').textContent = '$' + pkg.price;
+            document.getElementById('modalPackageBonus').textContent = '$' + pkg.bonus;
+            document.getElementById('modalTotalBalance').textContent = '$' + pkg.total;
+            
+            document.getElementById('packageModal').style.display = 'flex';
+        }
+
+        function confirmPackagePurchase() {
+            const packageId = 'premium'; // In real app, track selected package
+            const pkg = packages[packageId];
+            
+            // Update user balance
+            userData.balance += pkg.total;
+            
+            // Save to localStorage
+            localStorage.setItem('microEarnUserData', JSON.stringify(userData));
+            
+            // Update display
+            updateUserData();
+            
+            // Close modal
+            closePackageModal();
+            
+            alert(`Package purchased successfully! $${pkg.total} has been added to your balance.`);
+        }
+
+        // Post Job Functions
+        function selectPlatform(platform) {
+            // Remove selected class from all platforms
+            document.querySelectorAll('.platform-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked platform
+            event.target.closest('.platform-option').classList.add('selected');
+        }
+
+        function previewJob() {
+            const pricePerWorker = parseFloat(document.getElementById('pricePerWorker').value) || 0.50;
+            const workerCount = parseInt(document.getElementById('workerCount').value) || 10;
+            const totalCost = pricePerWorker * workerCount * 1.10; // 10% platform fee
+            
+            if (userData.balance < totalCost) {
+                alert(`Insufficient balance! Required: $${totalCost.toFixed(2)}, Your Balance: $${userData.balance.toFixed(2)}`);
+                return;
+            }
+            
+            alert(`Job preview ready! Total cost: $${totalCost.toFixed(2)}`);
+        }
+
+        // Deposit Functions
+        let selectedDepositAmount = 100;
+        let selectedDepositMethod = 'bkash';
+
+        function selectAmount(amount) {
+            selectedDepositAmount = amount;
+            
+            // Update UI
+            document.querySelectorAll('.amount-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.closest('.amount-option').classList.add('selected');
+            
+            // Update summary
+            updateDepositSummary();
+        }
+
+        function selectMethod(method) {
+            selectedDepositMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.method-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.closest('.method-option').classList.add('selected');
+        }
+
+        function updateDepositSummary() {
+            let bonus = 0;
+            if (selectedDepositAmount >= 500) bonus = selectedDepositAmount * 0.10;
+            else if (selectedDepositAmount >= 300) bonus = selectedDepositAmount * 0.05;
+            
+            const total = selectedDepositAmount + bonus;
+            
+            document.getElementById('summaryAmount').textContent = '$' + selectedDepositAmount.toFixed(2);
+            document.getElementById('summaryBonus').textContent = '$' + bonus.toFixed(2);
+            document.getElementById('summaryTotal').textContent = 'Total: $' + total.toFixed(2);
+        }
+
+        function submitDeposit() {
+            const transactionId = document.getElementById('transactionId').value;
+            
+            if (!transactionId) {
+                alert('Please enter transaction ID');
+                return;
+            }
+            
+            // Calculate bonus
+            let bonus = 0;
+            if (selectedDepositAmount >= 500) bonus = selectedDepositAmount * 0.10;
+            else if (selectedDepositAmount >= 300) bonus = selectedDepositAmount * 0.05;
+            
+            const totalAdded = selectedDepositAmount + bonus;
+            
+            // Update user balance
+            userData.balance += totalAdded;
+            
+            // Add to deposit history
+            if (!userData.deposits) userData.deposits = [];
+            userData.deposits.push({
+                date: new Date().toLocaleDateString(),
+                amount: selectedDepositAmount,
+                bonus: bonus,
+                total: totalAdded,
+                method: selectedDepositMethod
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('microEarnUserData', JSON.stringify(userData));
+            
+            // Update display
+            updateUserData();
+            
+            alert(`Deposit successful! $${totalAdded.toFixed(2)} added to your balance.`);
+            
+            // Clear form
+            document.getElementById('transactionId').value = '';
+        }
+
+        // Withdraw Functions
+        let selectedWithdrawAmount = 300;
+        let selectedWithdrawMethod = 'bkash';
+
+        function selectWithdrawAmount(amount) {
+            selectedWithdrawAmount = amount;
+            
+            // Update UI
+            document.querySelectorAll('.amount-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.closest('.amount-option').classList.add('selected');
+            
+            updateWithdrawSummary();
+        }
+
+        function selectWithdrawMethod(method) {
+            selectedWithdrawMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.method-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.closest('.method-option').classList.add('selected');
+        }
+
+        function updateWithdrawSummary() {
+            const fee = selectedWithdrawAmount * 0.015; // 1.5% fee
+            const youReceive = selectedWithdrawAmount - fee;
+            
+            document.getElementById('withdrawAmount').textContent = '$' + selectedWithdrawAmount.toFixed(2);
+            document.getElementById('withdrawFee').textContent = '$' + fee.toFixed(2);
+            document.getElementById('withdrawTotal').textContent = 'You Receive: $' + youReceive.toFixed(2);
+        }
+
+        function submitWithdrawal() {
+            const account = document.getElementById('withdrawAccount').value;
+            
+            if (!account) {
+                alert('Please enter account number');
+                return;
+            }
+            
+            if (selectedWithdrawAmount < 300) {
+                alert('Minimum withdrawal is $300');
+                return;
+            }
+            
+            if (selectedWithdrawAmount > userData.balance) {
+                alert('Insufficient balance');
+                return;
+            }
+            
+            const fee = selectedWithdrawAmount * 0.015;
+            const youReceive = selectedWithdrawAmount - fee;
+            
+            // Update user balance
+            userData.balance -= selectedWithdrawAmount;
+            
+            // Add to withdrawal history
+            if (!userData.withdrawals) userData.withdrawals = [];
+            userData.withdrawals.push({
+                date: new Date().toLocaleDateString(),
+                amount: selectedWithdrawAmount,
+                fee: fee,
+                received: youReceive,
+                method: selectedWithdrawMethod,
+                status: 'Pending'
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('microEarnUserData', JSON.stringify(userData));
+            
+            // Update display
+            updateUserData();
+            
+            alert(`Withdrawal request submitted! You will receive $${youReceive.toFixed(2)} within 24 hours.`);
+            
+            // Clear form
+            document.getElementById('withdrawAccount').value = '';
+        }
+
+        // Referral Functions
+        function copyReferralLink() {
+            const linkInput = document.getElementById('referralLinkInput');
+            linkInput.select();
+            document.execCommand('copy');
+            alert('Referral link copied to clipboard!');
+        }
+
+        function shareOnFacebook() {
+            alert('Sharing on Facebook...');
+        }
+
+        function shareOnWhatsApp() {
+            alert('Sharing on WhatsApp...');
+        }
+
+        function shareOnTelegram() {
+            alert('Sharing on Telegram...');
+        }
+
+        // Modal Functions
+        function closeModal() {
+            document.getElementById('jobModal').style.display = 'none';
+        }
+
+        function closePackageModal() {
+            document.getElementById('packageModal').style.display = 'none';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkUserActivation();
+            updateDepositSummary();
+            updateWithdrawSummary();
+            
+            // Listen for price changes in post job
+            const priceInput = document.getElementById('pricePerWorker');
+            const workerInput = document.getElementById('workerCount');
+            
+            if (priceInput && workerInput) {
+                priceInput.addEventListener('input', updateJobPreview);
+                workerInput.addEventListener('input', updateJobPreview);
+            }
+        });
+
+        function updateJobPreview() {
+            const pricePerWorker = parseFloat(document.getElementById('pricePerWorker').value) || 0.50;
+            const workerCount = parseInt(document.getElementById('workerCount').value) || 10;
+            const subtotal = pricePerWorker * workerCount;
+            const platformFee = subtotal * 0.10;
+            const totalCost = subtotal + platformFee;
+            
+            document.getElementById('previewPricePerWorker').textContent = '$' + pricePerWorker.toFixed(2);
+            document.getElementById('previewWorkerCount').textContent = workerCount;
+            document.getElementById('previewTotalCost').textContent = '$' + totalCost.toFixed(2);
+        }
+    </script>
+</body>
+</html>
